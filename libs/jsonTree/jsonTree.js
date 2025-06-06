@@ -220,21 +220,25 @@ var jsonTree = (function() {
         var self = this,
             el = document.createElement('li'),
             labelEl,
+            wrapper = document.createElement('div'),
             template = function(label, val) {
-                var str = '\
+                wrapper.innerHTML = '\
                     <span class="jsontree_label-wrapper">\
-                        <span class="jsontree_label">"' +
-                            label +
-                        '"</span> : \
+                        <span class="jsontree_label"></span> : \
                     </span>\
                     <span class="jsontree_value-wrapper">\
-                        <span class="jsontree_value jsontree_value_' + self.type + '">' +
-                            val +
-                        '</span>' +
-                        (!isLast ? ',' : '') + 
-                    '</span>';
-    
-                return str;
+                        <span class="jsontree_value jsontree_value_' + self.type + '"></span>\
+                        ' + (!isLast ? ',' : '') + '\
+                    </span>';
+                
+                var labelNode = wrapper.querySelector('.jsontree_label');
+                var valueNode = wrapper.querySelector('.jsontree_value');
+
+                // Escape HTML characters in the label and value to prevent XSS attacks
+                labelNode.textContent = '"' + label + '"';
+                valueNode.textContent = val;
+                
+                return wrapper.innerHTML;
             };
             
         self.label = label;
